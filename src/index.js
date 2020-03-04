@@ -1,25 +1,17 @@
 var express = require("express");
 var app = express();
-var mysql = require("mysql");
+const bodyParser = require("body-parser");
+const sql_command = require("./utility/sql_commands");
 
-var connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "doc226664",
-  port: 3306
-});
+app.use(bodyParser.urlencoded({ extended: false }));
 
-connection.connect(err => {
-  if (err) {
-    console.log("error took place ", err);
-    return;
-  }
-  console.log(" SQL Connected");
-});
+app.use(bodyParser.json());
 
-app.get("/", function(req, res) {
-  res.send("Test Server");
-});
+sql_command.connect();
+
+app.use("/api/user", require("./routes/user"));
+
+app.use("/api/location", require("./routes/location"));
 
 app.listen(3000, () => {
   console.log("Server is running");
